@@ -104,7 +104,7 @@ public class MainActivity extends ActionBarActivity implements PullRefreshLayout
 
             @Override
             public void onError(Throwable t) {
-                Log.e("Api", t.getMessage());
+                Log.e("Api", t.getMessage() + "");
                 layout.setRefreshing(false);
                 // TODO: Set error view
                 Snackbar

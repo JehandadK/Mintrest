@@ -9,6 +9,7 @@ import com.mindvalley.requestqueue.Response;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 
@@ -19,8 +20,19 @@ public class ImageParser implements Parser<Bitmap> {
 
 
     @Override
-    public Bitmap fromBody(InputStream res, Type type) {
-        return BitmapFactory.decodeStream(new BufferedInputStream(res));
+    public Bitmap fromBody(InputStream res, Type type) throws IOException {
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inJustDecodeBounds = true;
+        BufferedInputStream buffer = new BufferedInputStream(res);
+        BitmapFactory.decodeStream(buffer, null, opts);
+        buffer.reset();
+
+        // Calculate inSampleSize
+        // opts.inSampleSize = calculateInSampleSize(options, reqWidth,reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        opts.inJustDecodeBounds = false;
+        return BitmapFactory.decodeStream(buffer, null, opts);
     }
 
     @Override

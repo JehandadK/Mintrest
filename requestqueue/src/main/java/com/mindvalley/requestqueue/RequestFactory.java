@@ -9,6 +9,7 @@ import com.mindvalley.requestqueue.impl.RealRequest;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
+import java.util.regex.Pattern;
 
 /**
  * Can also be named as request factory, creates cancellable and executable requests.
@@ -37,7 +38,8 @@ public class RequestFactory {
      */
     public <T> Request<T> get(String url, Type type) {
         RealRequest<T> req = null;
-        String completeUrl = url.matches("^http") ? url : endpoint + url;
+
+        String completeUrl = Pattern.compile("^http").matcher(url).find() ? url : endpoint + url;
         try {
             req = new RealRequest<T>(completeUrl, parser, executor, type );
         } catch (MalformedURLException e) {

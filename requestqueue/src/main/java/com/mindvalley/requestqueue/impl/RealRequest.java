@@ -1,5 +1,7 @@
 package com.mindvalley.requestqueue.impl;
 
+import android.util.Log;
+
 import com.mindvalley.requestqueue.Callback;
 import com.mindvalley.requestqueue.Executor;
 import com.mindvalley.requestqueue.Parser;
@@ -17,6 +19,9 @@ import java.net.URL;
 /**
  */
 public class RealRequest<T> implements Request<T> {
+
+    public static final int DEFAULT_TIMEOUT = 60 * 1000;
+    public static final int READ_TIMEOUT = 60 * 1000;
 
     int method = Method.GET;
     URL url;
@@ -58,9 +63,13 @@ public class RealRequest<T> implements Request<T> {
         HttpURLConnection conn = null;
         InputStream in = null;
         Response<T> res = new Response<>();
-
         try {
             conn = (HttpURLConnection) url.openConnection();
+            conn.setDoInput(true);
+            conn.setConnectTimeout(DEFAULT_TIMEOUT);
+            conn.setReadTimeout(READ_TIMEOUT);
+            conn.setInstanceFollowRedirects(true);
+            conn.connect();
             in = conn.getInputStream();
             responseBody = parser.fromBody(in, type);
             res.body = responseBody;
@@ -83,7 +92,7 @@ public class RealRequest<T> implements Request<T> {
         }
     }
 
-    public boolean isCancelled(){
+    public boolean isCancelled() {
         return isCancelled;
     }
 }

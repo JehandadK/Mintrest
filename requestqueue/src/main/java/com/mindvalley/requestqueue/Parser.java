@@ -2,6 +2,7 @@ package com.mindvalley.requestqueue;
 
 import com.mindvalley.requestqueue.Response;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 
@@ -10,7 +11,7 @@ import java.lang.reflect.Type;
  */
 public interface Parser<T> {
 
-    T fromBody(InputStream res, Type type);
+    T fromBody(InputStream res, Type type) throws IOException;
 
     Response toBody(T obj);
 
