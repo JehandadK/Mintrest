@@ -56,6 +56,7 @@ public class ProductListItemBinder extends ListItemBinder<Product> {
         }
         pH.imgProduct.setImageResource(LOADING_IMAGE_ID);
 
+//        Picasso.with(ctx).load(item.getDefaultImage().getPath()).into(pH.imgProduct);
         Request<Bitmap> req = ApiClientFactory.getDefaultImageClient().get(item.getDefaultImage().getPath(), null);
         req.queue(new BitmapDisplayer(pH.imgProduct,item.getDefaultImage().getPath()));
     }

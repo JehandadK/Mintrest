@@ -41,7 +41,7 @@ public class RequestFactory {
 
         String completeUrl = Pattern.compile("^http").matcher(url).find() ? url : endpoint + url;
         try {
-            req = new RealRequest<T>(completeUrl, parser, executor, type );
+            req = new RealRequest<T>(completeUrl, parser, executor, type, cache );
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -53,8 +53,8 @@ public class RequestFactory {
 
         private Parser parser;
         private Executor executor = new RealExecutor();
-        private Cache cache = new LruCache(CACHE_SIZE);
         private String endpoint;
+        private Cache cache;
 
 
         public Builder setParser(Parser parser) {
@@ -79,6 +79,7 @@ public class RequestFactory {
 
 
         public RequestFactory createApiClient() {
+            if(executor == null || parser == null) throw new IllegalArgumentException();
             return new RequestFactory( parser, executor, cache, endpoint);
         }
     }

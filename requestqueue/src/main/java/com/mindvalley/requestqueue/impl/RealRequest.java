@@ -2,6 +2,7 @@ package com.mindvalley.requestqueue.impl;
 
 import android.util.Log;
 
+import com.mindvalley.requestqueue.Cache;
 import com.mindvalley.requestqueue.Callback;
 import com.mindvalley.requestqueue.Executor;
 import com.mindvalley.requestqueue.Parser;
@@ -29,13 +30,13 @@ public class RealRequest<T> implements Request<T> {
     Executor executor;
     Reader body;
     Type type;
-
+    Cache cache;
     T responseBody;
 
     private boolean isCancelled = false;
 
-    public RealRequest(String url, Parser<T> parser, Executor executor, Type type) throws MalformedURLException {
-        this(Method.GET, url, parser, executor, null, type);
+    public RealRequest(String url, Parser<T> parser, Executor executor, Type type, Cache cache) throws MalformedURLException {
+        this(Method.GET, url, parser, executor, null, type, cache);
     }
 
     /**
@@ -47,22 +48,24 @@ public class RealRequest<T> implements Request<T> {
      * @param executor
      * @param body
      */
-    public RealRequest(int method, String url, Parser<T> parser, Executor executor, Reader body, Type type) throws MalformedURLException {
+    public RealRequest(int method, String url, Parser<T> parser, Executor executor, Reader body, Type type, Cache cache) throws MalformedURLException {
         this.method = method;
         this.url = new URL(url);
         this.parser = parser;
         this.executor = executor;
         this.body = body;
         this.type = type;
+        this.cache = cache;
+
     }
 
     public Response<T> execute() throws IOException {
 
         if (isCancelled) return null;
 
+        Response<T> res = new Response<>();
         HttpURLConnection conn = null;
         InputStream in = null;
-        Response<T> res = new Response<>();
         try {
             conn = (HttpURLConnection) url.openConnection();
             conn.setDoInput(true);
@@ -72,6 +75,9 @@ public class RealRequest<T> implements Request<T> {
             conn.connect();
             in = conn.getInputStream();
             responseBody = parser.fromBody(in, type);
+            synchronized (cache){
+                cache.put(url.getHost() + url.getPath(), responseBody);
+            }
             res.body = responseBody;
 
         } finally {
@@ -82,6 +88,14 @@ public class RealRequest<T> implements Request<T> {
     }
 
     public void queue(Callback<T> callback) {
+        Response<T> res = new Response<>();
+        Object o = cache.get(url.getHost() + url.getPath());
+        if( o != null) {
+            res.setIsFromCache(true);
+            res.body = (T) o;
+            callback.onSuccess(res);
+            return;
+        }
         executor.queue(this, callback);
     }
 

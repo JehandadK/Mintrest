@@ -11,9 +11,12 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.mindvalley.requestqueue.RequestFactory;
 import com.mindvalley.requestqueue.impl.GsonParser;
+import com.mindvalley.requestqueue.impl.ImageCache;
 import com.mindvalley.requestqueue.impl.ImageParser;
 import com.mindvalley.requestqueue.impl.LruCache;
+import com.mindvalley.requestqueue.impl.ObjectCache;
 import com.mindvalley.requestqueue.impl.RealExecutor;
+import com.mindvalley.requestqueue.impl.StringCache;
 
 import java.lang.reflect.Type;
 import java.util.Date;
@@ -44,6 +47,7 @@ public class ApiClientFactory {
         apiFactory = new RequestFactory.Builder().setEndpoint("https://www.zalora.com.my/")
                 .setParser(parser)
                 .setExecutor(executor)
+                .setCache(new ObjectCache(10))
                 .createApiClient();
         return apiFactory;
     }
@@ -52,6 +56,7 @@ public class ApiClientFactory {
         if (imgFactory != null) return imgFactory;
         imgFactory = new RequestFactory.Builder().setEndpoint("https://www.zalora.com.my/")
                 .setParser(new ImageParser())
+                .setCache(new ImageCache(8*1024*1024))
                 .setExecutor(executor)
                 .createApiClient();
         return imgFactory;
