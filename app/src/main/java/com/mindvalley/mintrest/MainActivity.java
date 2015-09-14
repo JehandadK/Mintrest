@@ -26,6 +26,7 @@ import com.mindvalley.requestqueue.Request;
 import com.mindvalley.requestqueue.Response;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -71,7 +72,15 @@ public class MainActivity extends ActionBarActivity implements PullRefreshLayout
             @Override
             public void onSuccess(Response<WebResponse<ProductListResponse>> response) {
                 layout.setRefreshing(false);
-                binder.setItems(response.getBody().getMetadata().getResults());
+
+                // Done to demonstrate ability of multiple loading of images.
+                // Same Http resources dont make extra http calls.
+                // So in here if 3 images have the same url they shall be loaded at once.
+                ArrayList<Product> arr = (ArrayList<Product>) response.getBody().getMetadata().getResults().clone();
+                arr.addAll(response.getBody().getMetadata().getResults());
+                arr.addAll(response.getBody().getMetadata().getResults());
+                Collections.shuffle(arr);
+                binder.setItems(arr);
                 adapter.notifyDataSetChanged();
             }
 

@@ -36,3 +36,10 @@ As you know there are following categories of testing in android
 3. Instrumentation or UITests can be controlled using espresso, and can run simultaneaosly on many devices using spoon runner.
 
 I have experienced and used all above techniques. As opposed to what people call functional testing ( Blackbox and Whitebox), I am also familiar with Performance Testing and User Experience Testing.
+
+Future:
+
+1) Add Internet Connection utils so that Url Connection is faster when declining requests.
+2) You will find some Todos to explain what I have left out.
+
+All in all! I beleive there is a lot that could have been dont to impress by adding loads of open source widgets and animations to impressing the tech team with Compile Time Annotations, usage of Dagger, RxJava, Code Generation and test scripts. But if this does not meets your standards I would really love if you could spend an hour with me teaching where I went wrong.

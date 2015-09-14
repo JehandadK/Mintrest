@@ -18,7 +18,7 @@ import java.net.URL;
 /**
  * Not a complete implementation doesnot cover POST, PUT, DELETE. Serves to demonstrate concept.
  */
-public class RealRequest<T> implements Request<T> {
+public class RealRequest<T> implements Request<T>, Callback<T> {
 
     public static final int DEFAULT_TIMEOUT = 60 * 1000;
     public static final int READ_TIMEOUT = 60 * 1000;
@@ -31,6 +31,7 @@ public class RealRequest<T> implements Request<T> {
     Type type;
     Cache cache;
     T responseBody;
+    Callback<T> callback;
 
     private boolean isCancelled = false;
 
@@ -58,6 +59,11 @@ public class RealRequest<T> implements Request<T> {
 
     }
 
+    @Override
+    public String getUrlHash() {
+        return url.getHost() + url.getPath();
+    }
+
     public Response<T> execute() throws IOException {
 
         if (isCancelled) return null;
@@ -74,8 +80,9 @@ public class RealRequest<T> implements Request<T> {
             conn.connect();
             in = conn.getInputStream();
             responseBody = parser.fromBody(in, type);
-            synchronized (cache){
-                cache.put(url.getHost() + url.getPath(), responseBody);
+            synchronized (cache) {
+                if (cache.get(url.getHost() + url.getPath()) != responseBody)
+                    cache.put(url.getHost() + url.getPath(), responseBody);
             }
             res.body = responseBody;
 
@@ -88,15 +95,19 @@ public class RealRequest<T> implements Request<T> {
 
     public void queue(Callback<T> callback) {
         Response<T> res = new Response<>();
-        Object o = cache.get(url.getHost() + url.getPath());
-        if( o != null) {
+        Object o = null;
+        synchronized (cache) {
+            o = cache.get(url.getHost() + url.getPath());// Due to underlying implementation
+        }
+        if (o != null) {
             res.setIsFromCache(true);
             res.body = (T) o;
-            // This may look real messy but the alternative is to seprate requets implementations into ImageRequest and StringRequests as done in Volley
+            // This may look real messy but the alternative is to seperate requests implementations into ImageRequest and StringRequests as done in Volley
             callback.onSuccess(res);
             return;
         }
-        executor.queue(this, callback);
+        this.callback = callback;
+        executor.queue(this, this);
     }
 
     @Override
@@ -108,5 +119,15 @@ public class RealRequest<T> implements Request<T> {
 
     public boolean isCancelled() {
         return isCancelled;
+    }
+
+    @Override
+    public void onSuccess(Response<T> response) {
+        if (!isCancelled) callback.onSuccess(response);
+    }
+
+    @Override
+    public void onError(Throwable t) {
+        if (!isCancelled) callback.onError(t);
     }
 }

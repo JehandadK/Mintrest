@@ -6,13 +6,7 @@ import java.io.IOException;
  */
 public interface Request<T> {
 
-    interface Method {
-        int GET = 1;
-        int POST = 2;
-        // ...
-
-    }
-
+    String getUrlHash();
 
     Response<T> execute() throws IOException;
 
@@ -21,5 +15,12 @@ public interface Request<T> {
     void cancel();
 
     boolean isCancelled();
+
+    interface Method {
+        int GET = 1;
+        int POST = 2;
+        // ...
+
+    }
 
 }
