@@ -22,8 +22,12 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':requestqueue')
-    compile 'com.android.support:appcompat-v7:21.0.3'
 
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.easytesting:fest:1.0.16'
+    testCompile 'com.squareup:fest-android:1.0.8'
+
+    compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.google.guava:guava:18.0'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.squareup.retrofit:retrofit:2.0.0-beta1'
