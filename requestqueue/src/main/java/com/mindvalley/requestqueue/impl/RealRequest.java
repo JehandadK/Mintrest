@@ -1,7 +1,5 @@
 package com.mindvalley.requestqueue.impl;
 
-import android.util.Log;
-
 import com.mindvalley.requestqueue.Cache;
 import com.mindvalley.requestqueue.Callback;
 import com.mindvalley.requestqueue.Executor;
@@ -18,6 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
+ * Not a complete implementation doesnot cover POST, PUT, DELETE. Serves to demonstrate concept.
  */
 public class RealRequest<T> implements Request<T> {
 
@@ -93,6 +92,7 @@ public class RealRequest<T> implements Request<T> {
         if( o != null) {
             res.setIsFromCache(true);
             res.body = (T) o;
+            // This may look real messy but the alternative is to seprate requets implementations into ImageRequest and StringRequests as done in Volley
             callback.onSuccess(res);
             return;
         }

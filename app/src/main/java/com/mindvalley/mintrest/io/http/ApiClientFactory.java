@@ -13,16 +13,17 @@ import com.mindvalley.requestqueue.RequestFactory;
 import com.mindvalley.requestqueue.impl.GsonParser;
 import com.mindvalley.requestqueue.impl.ImageCache;
 import com.mindvalley.requestqueue.impl.ImageParser;
-import com.mindvalley.requestqueue.impl.LruCache;
 import com.mindvalley.requestqueue.impl.ObjectCache;
 import com.mindvalley.requestqueue.impl.RealExecutor;
-import com.mindvalley.requestqueue.impl.StringCache;
 
 import java.lang.reflect.Type;
 import java.util.Date;
 
 /**
- * Created by rifat on 13/09/2015.
+ * Singleton based on same library, this shows same library can be configured to use it as ImageRequests as well as JsonApiRequests.
+ *
+ *
+ *
  */
 public class ApiClientFactory {
 
@@ -63,7 +64,7 @@ public class ApiClientFactory {
     }
 
     /**
-     * Demonstrate extensible nature of parsing types
+     * Demonstrate extensible nature of parsing custom types like Date
      * @return
      */
     private static Gson defaultGson() {

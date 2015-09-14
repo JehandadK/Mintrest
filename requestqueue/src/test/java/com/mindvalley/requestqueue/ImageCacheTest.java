@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(manifest = "../src/main/AndroidManifest.xml", constants = BuildConfig.class, sdk = 21)
+@Config(constants = BuildConfig.class, sdk = 21)
 public class ImageCacheTest {
 
     private static final Bitmap A = Bitmap.createBitmap(1, 1, Bitmap.Config.ALPHA_8);

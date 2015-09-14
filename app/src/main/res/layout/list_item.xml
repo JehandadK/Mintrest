@@ -5,12 +5,13 @@
     android:background="@drawable/background_card"
     android:orientation="vertical" >
 
-    <com.etsy.android.grid.util.DynamicHeightImageView
+    <com.mindvalley.mintrest.views.ProportionalImageView
         android:id="@+id/image"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:scaleType="fitStart"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:adjustViewBounds="true"
         />
 
     <TextView
@@ -21,7 +22,7 @@
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:paddingTop="4dp"
-        android:textSize="18sp"/>
+        android:textSize="12dp" />
 
     <View
         android:layout_width="match_parent"
@@ -32,10 +33,12 @@
         android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="right"
         android:paddingBottom="8dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        android:paddingTop="4dp" />
+        android:paddingTop="4dp"
+        android:textSize="8dp" />
 
 
 </LinearLayout>

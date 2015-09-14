@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.etsy.android.grid.util.DynamicHeightImageView;
 import com.google.common.base.Strings;
 import com.mindvalley.mintrest.R;
 import com.mindvalley.mintrest.io.http.ApiClientFactory;
@@ -14,7 +13,6 @@ import com.mindvalley.mintrest.models.Product;
 import com.mindvalley.requestqueue.Callback;
 import com.mindvalley.requestqueue.Request;
 import com.mindvalley.requestqueue.Response;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -51,14 +49,22 @@ public class ProductListItemBinder extends ListItemBinder<Product> {
         pH.txtDesc.setText(item.getData().getBrand());
         pH.txtTitle.setText(item.getData().getName());
 
-        if (item.getDefaultImage() == null || Strings.isNullOrEmpty(item.getDefaultImage().getPath())) {
+
+        if (item.getDefaultImage() == null) {
             pH.imgProduct.setImageResource(EMPTY_IMAGE_ID);
+            return;
         }
+        String imageUrl = item.getDefaultImage().getPath();
+        if (Strings.isNullOrEmpty(imageUrl)) {
+            pH.imgProduct.setImageResource(EMPTY_IMAGE_ID);
+            return;
+        }
+
         pH.imgProduct.setImageResource(LOADING_IMAGE_ID);
 
 //        Picasso.with(ctx).load(item.getDefaultImage().getPath()).into(pH.imgProduct);
-        Request<Bitmap> req = ApiClientFactory.getDefaultImageClient().get(item.getDefaultImage().getPath(), null);
-        req.queue(new BitmapDisplayer(pH.imgProduct,item.getDefaultImage().getPath()));
+        Request<Bitmap> req = ApiClientFactory.getDefaultImageClient().get(imageUrl, null);
+        req.queue(new BitmapDisplayer(pH.imgProduct, imageUrl));
     }
 
     class BitmapDisplayer implements Callback<Bitmap> {
@@ -95,7 +101,7 @@ public class ProductListItemBinder extends ListItemBinder<Product> {
         public TextView txtTitle;
 
         @Bind(R.id.image)
-        public DynamicHeightImageView imgProduct;
+        public ImageView imgProduct;
 
         @Bind(R.id.description)
         public TextView txtDesc;
