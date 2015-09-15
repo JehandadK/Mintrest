@@ -30,7 +30,7 @@ public class ImageCache extends LruCache<Bitmap> {
     @Override
     protected void entryRemoved(boolean evicted, String key, Bitmap oldValue, Bitmap newValue) {
         super.entryRemoved(evicted, key, oldValue, newValue);
-        // Fix for android bitmap recycling issue
-        if (!oldValue.isRecycled()) oldValue.recycle();
+        // Fix for android bitmap recycling issue not required now
+//        if (!oldValue.isRecycled()) oldValue.recycle();
     }
 }
